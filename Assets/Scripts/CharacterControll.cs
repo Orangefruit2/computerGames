@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 public class CharacterControll : MonoBehaviour
 {
@@ -128,6 +129,29 @@ public class CharacterControll : MonoBehaviour
 
             }
         }
+        if (currentLive <= 0)
+        {
+            respawn();
+        } else
+        {
+            Vector2 newPosition = rigidBody.position + moveVelocity * Time.deltaTime;
+            rigidBody.MovePosition(newPosition);
+            rigidBody.MoveRotation(rotation);
+        }
+
+    }
+
+    private void respawn()
+    {
+        GameObject[] respawns = GameObject.FindGameObjectsWithTag("Respawn");
+        if (respawns.Length > 0)
+        {
+            GameObject respawn = respawns[Random.Range(0, respawns.Length)];
+            rigidBody.MovePosition(respawn.GetComponent<Transform>().position);
+        }
+        setLive(maxLive);
+        BroadcastMessage("onPlayerRespawn", this);
+
     }
 
     private void checkShot()
@@ -142,17 +166,13 @@ public class CharacterControll : MonoBehaviour
 
     public void ApplyDamage(float damage)
     {
-        currentLive = currentLive - damage;
-        Debug.Log("DAMAGE TAKEN");
-        BroadcastMessage("updateLive", currentLive);
+        setLive(currentLive - damage);
+
     }
 
-    void FixedUpdate()
+    private void setLive(float newLive)
     {
-        //Update the player position
-        Vector2 newPosition = rigidBody.position + moveVelocity * Time.deltaTime;
-        rigidBody.MovePosition(newPosition);
-
-        rigidBody.MoveRotation(rotation);
+        currentLive = newLive;
+        BroadcastMessage("updateLive", currentLive);
     }
 }

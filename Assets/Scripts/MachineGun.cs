@@ -40,13 +40,7 @@ public class MachineGun : MonoBehaviour
     private WeaponState weaponState = WeaponState.READY;
     void Start()
     {
-        setMagazine(magazine);
-        setAmmunition(ammunition);
-        CharacterControll parent = GetComponentInParent<CharacterControll>();
-        if (parent != null)
-        {
-            parent.updateWeapon(this);
-        }
+        onPlayerRespawn(GetComponentInParent<CharacterControll>());
 
     }
 
@@ -152,6 +146,17 @@ public class MachineGun : MonoBehaviour
 
             }
 
+        }
+    }
+    public void onPlayerRespawn(CharacterControll controll)
+    {
+        setMagazine(magazine);
+        setAmmunition(ammunition);
+        timer = 0;
+        reloadTime =0;
+        if (controll != null)
+        {
+            controll.updateWeapon(this);
         }
     }
     internal WeaponState getState()
