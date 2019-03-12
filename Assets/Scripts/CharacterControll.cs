@@ -106,6 +106,16 @@ public class CharacterControll : MonoBehaviour
                 }
             }
         }
+
+        if (collision.gameObject.tag == "Life")
+        {
+            if (currentLive < 100)
+            {
+                currentLive += 10;
+                setLive(currentLive);
+                collision.gameObject.SendMessage("despawnItem");
+            }
+        }
     }
     void OnTriggerExit2D(Collider2D collision)
     {
@@ -125,6 +135,7 @@ public class CharacterControll : MonoBehaviour
             }
 
         }
+
     }
     void Update()
     {
