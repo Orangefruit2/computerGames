@@ -57,8 +57,11 @@ public class MachineGun : MonoBehaviour
                 timer = 0;
                 for (int i = 0; i < bulletCount; i++)
                 {
+
                     float rot = Random.Range(-spray, spray);
                     GameObject obj = Instantiate(bullet, firePoint.position, firePoint.rotation);
+                    MachineGunBullet bulletOrigin = obj.GetComponent<MachineGunBullet>();
+                    bulletOrigin.player = GetComponentInParent<CharacterControll>().gameObject;
                     obj.SetActive(true);
                 }
                 setAmmunition(currentAmmunition - 1);
@@ -164,3 +167,4 @@ public class MachineGun : MonoBehaviour
         return this.weaponState;
     }
 }
+

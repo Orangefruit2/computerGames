@@ -10,6 +10,9 @@ public class MachineGunBullet : MonoBehaviour
     public float spray = 20;
     public float lifeTime = 1;
     private float timeLived = 0;
+    public GameObject player;
+    public float damage=10;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -31,16 +34,22 @@ public class MachineGunBullet : MonoBehaviour
         if (collision.gameObject.tag == "Player")
         {
             Debug.Log("Player hit");
-            collision.gameObject.SendMessage("ApplyDamage", 10);
+            collision.gameObject.SendMessage("ApplyDamage", this);
+            Destroy(gameObject);
+
         }
-        
-        Destroy(gameObject);
+        if (collision.gameObject.tag == "Wall")
+        {
+            Destroy(gameObject);
+
+
+        }
+
     }
 
     void Update()
     {
         timeLived = timeLived + Time.deltaTime;
-        Debug.Log(timeLived);
 
         if (timeLived > lifeTime)
         {
