@@ -8,6 +8,9 @@ public class MachineGun : MonoBehaviour
 {
     public int bulletCount = 1;
     public float shootFrequenzy = 0.5f;
+
+
+
     public float reloadTime = 2;
     public Transform firePoint;
     public GameObject bullet;
@@ -17,16 +20,34 @@ public class MachineGun : MonoBehaviour
     private int currentMagazine;
     private int currentAmmunition;
     private float timer = 0;
+    private float reloadTimer = 0;
     
     public enum WeaponState
     {
         READY,REALOAD,OUT_OF_AMMO
     };
+
+    internal int getMagazine()
+    {
+        return currentMagazine;
+    }
+
+    internal int getAmmo()
+    {
+        return currentAmmunition;
+    }
+
     private WeaponState weaponState = WeaponState.READY;
     void Start()
     {
-        currentAmmunition = ammunition;
-        currentMagazine = magazine;
+        setMagazine(magazine);
+        setAmmunition(ammunition);
+        CharacterControll parent = GetComponentInParent<CharacterControll>();
+        if (parent != null)
+        {
+            parent.updateWeapon(this);
+        }
+
     }
 
     /**
@@ -51,11 +72,7 @@ public class MachineGun : MonoBehaviour
         }
         else if(weaponState == WeaponState.REALOAD)
         {
-            if(timer>= reloadTime)
-            {
-                setAmmunition(ammunition);
-            }
-
+ 
         } else if(weaponState == WeaponState.OUT_OF_AMMO)
         {
 
@@ -68,9 +85,10 @@ public class MachineGun : MonoBehaviour
 
     public void setAmmunition(int newAmmo)
     {
+        bool updateParent = newAmmo != currentAmmunition;    
         if(newAmmo <= 0)
         {
-            if (magazine == 0)
+            if (currentMagazine == 0)
             {
                 setState(WeaponState.OUT_OF_AMMO);
             } else
@@ -83,8 +101,15 @@ public class MachineGun : MonoBehaviour
             setState(WeaponState.READY);
             currentAmmunition = newAmmo;
         }
-       
-       
+
+        if (updateParent)
+        {
+            CharacterControll parent = GetComponentInParent<CharacterControll>();
+            if (parent != null)
+            {
+                parent.updateWeapon(this);
+            }
+        }
     }
 
     private void setState(WeaponState state)
@@ -93,6 +118,11 @@ public class MachineGun : MonoBehaviour
         {
 
             weaponState = state;
+            CharacterControll parent = GetComponentInParent<CharacterControll>();
+            if (parent != null)
+            {
+                parent.updateWeapon(this);
+            }
         }
     }
 
@@ -110,6 +140,22 @@ public class MachineGun : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-       timer = timer + Time.deltaTime;
+        timer = timer + Time.deltaTime;
+
+        if (weaponState == WeaponState.REALOAD)
+        {
+            reloadTimer = reloadTimer + Time.deltaTime;
+            if (reloadTimer >= reloadTime)
+            {
+                setAmmunition(ammunition);
+                reloadTimer = 0;
+
+            }
+
+        }
+    }
+    internal WeaponState getState()
+    {
+        return this.weaponState;
     }
 }

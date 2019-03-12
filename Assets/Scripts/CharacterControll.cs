@@ -70,6 +70,13 @@ public class CharacterControll : MonoBehaviour
             moveRotation = rotation;
         }
     }
+
+    internal void updateWeapon(MachineGun machineGun)
+    {
+        BroadcastMessage("updateWeaponState",machineGun);
+    }
+
+
     void Update()
     {
 
