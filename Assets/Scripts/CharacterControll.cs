@@ -13,6 +13,7 @@ public class CharacterControll : MonoBehaviour
     public float minDistance=1;
 
     public float maxLive = 100;
+    public float protectionFactor = 0.5f;
     private Rigidbody2D rigidBody;
     private Vector2 moveVelocity;
     private Vector2 rawMousePosition=new Vector2();
@@ -21,6 +22,9 @@ public class CharacterControll : MonoBehaviour
     private float rotation;
     private float currentLive = 100;
     public int score = 0;
+    public Color shieldColor = Color.green;
+    private Color normalColor;
+    private List<GameObject> tables=new List<GameObject>();
     private enum Direction
     {
         VERTICAL,HORIZONTAL
@@ -39,6 +43,7 @@ public class CharacterControll : MonoBehaviour
     void Start()
     {
         rigidBody = GetComponent<Rigidbody2D>();
+        normalColor = GetComponent<SpriteRenderer>().color;
         currentLive = maxLive;
         //Update the strings above the player
         BroadcastMessage("updateLive", currentLive);
@@ -80,7 +85,41 @@ public class CharacterControll : MonoBehaviour
         BroadcastMessage("updateWeaponState",machineGun);
     }
 
+    void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.gameObject.tag == "TablePlayerCollider")
+        {
+            tables.Add(collision.transform.parent.gameObject);
 
+            foreach (Transform child in GetComponentInChildren<Transform>())
+            {
+                if (child.CompareTag("Body"))
+                {
+                    child.GetComponent<SpriteRenderer>().color = shieldColor;
+                    break;
+                }
+            }
+        }
+    }
+    void OnTriggerExit2D(Collider2D collision)
+    {
+        if (collision.gameObject.tag == "TablePlayerCollider")
+        {
+            tables.Remove(collision.transform.parent.gameObject);
+            if (tables.Count == 0)
+            {
+                foreach (Transform child in GetComponentInChildren<Transform>())
+                {
+                    if (child.CompareTag("Body"))
+                    {
+                        child.GetComponent<SpriteRenderer>().color = normalColor;
+                        break;
+                    }
+                }
+            }
+
+        }
+    }
     void Update()
     {
 
@@ -169,10 +208,19 @@ public class CharacterControll : MonoBehaviour
 
     public void ApplyDamage(MachineGunBullet bullet)
     {
+        float damage = bullet.damage;
+        foreach (GameObject obj in bullet.tables)
+        {
+            if (this.tables.Contains(obj))
+            {
+                damage = damage*(1-protectionFactor);
+                break;
+            }
+        }
 
         if (currentLive > 0)
         {
-            setLive(currentLive - bullet.damage);
+            setLive(currentLive - damage);
 
             if (currentLive <= 0)
             {

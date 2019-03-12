@@ -14,7 +14,6 @@ public class MachineGun : MonoBehaviour
     public float reloadTime = 2;
     public Transform firePoint;
     public GameObject bullet;
-    public float spray = 20;
     public int magazine = 3;
     public int ammunition = 5;
     private int currentMagazine;
@@ -58,7 +57,6 @@ public class MachineGun : MonoBehaviour
                 for (int i = 0; i < bulletCount; i++)
                 {
 
-                    float rot = Random.Range(-spray, spray);
                     GameObject obj = Instantiate(bullet, firePoint.position, firePoint.rotation);
                     MachineGunBullet bulletOrigin = obj.GetComponent<MachineGunBullet>();
                     bulletOrigin.player = GetComponentInParent<CharacterControll>().gameObject;

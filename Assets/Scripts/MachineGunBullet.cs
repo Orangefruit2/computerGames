@@ -12,7 +12,7 @@ public class MachineGunBullet : MonoBehaviour
     private float timeLived = 0;
     public GameObject player;
     public float damage=10;
-
+    public List<GameObject> tables = new List<GameObject>();
     // Start is called before the first frame update
     void Start()
     {
@@ -31,18 +31,19 @@ public class MachineGunBullet : MonoBehaviour
         Debug.Log("Trigger Destroy");
         if (collision.gameObject.tag == "Bullet") return;
 
-        if (collision.gameObject.tag == "Player")
+       else  if (collision.gameObject.tag == "Player")
         {
             Debug.Log("Player hit");
             collision.gameObject.SendMessage("ApplyDamage", this);
             Destroy(gameObject);
 
         }
-        if (collision.gameObject.tag == "Wall")
+        else if (collision.gameObject.tag == "Wall")
         {
             Destroy(gameObject);
-
-
+        } else if(collision.gameObject.tag == "Table")
+        {
+            tables.Add(collision.gameObject);
         }
 
     }
