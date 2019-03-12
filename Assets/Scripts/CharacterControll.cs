@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using Random = UnityEngine.Random;
 
 public class CharacterControll : MonoBehaviour
@@ -19,6 +20,7 @@ public class CharacterControll : MonoBehaviour
     private float moveRotation;
     private float rotation;
     private float currentLive = 100;
+    public int score = 0;
     private enum Direction
     {
         VERTICAL,HORIZONTAL
@@ -31,8 +33,9 @@ public class CharacterControll : MonoBehaviour
     };
     private Direction direction;
     public Player player = Player.P1;
+    public static readonly int SCORE_ON_DEATH=1;
+    public static readonly int SCORE_ON_HILL=5;
 
-    
     void Start()
     {
         rigidBody = GetComponent<Rigidbody2D>();
@@ -164,10 +167,28 @@ public class CharacterControll : MonoBehaviour
     }
 
 
-    public void ApplyDamage(float damage)
+    public void ApplyDamage(MachineGunBullet bullet)
     {
-        setLive(currentLive - damage);
 
+        if (currentLive > 0)
+        {
+            setLive(currentLive - bullet.damage);
+
+            if (currentLive <= 0)
+            {
+                bullet.player.GetComponent<CharacterControll>().addToScore(SCORE_ON_DEATH);
+            }
+        }
+
+
+    }
+
+    public void addToScore(int scorePoints)
+    {
+        score = score + scorePoints;
+        GameObject.FindGameObjectsWithTag("scoreUI" + player)[0].GetComponent<Text>().text = player + " " + score.ToString("000");
+
+        //BroadcastMessage("scorePlayer"+player, score);
     }
 
     private void setLive(float newLive)
