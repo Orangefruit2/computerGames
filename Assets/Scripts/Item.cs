@@ -55,10 +55,10 @@ public class Item : MonoBehaviour
         Vector2 newPosition3 = new Vector2(4, 0);
         Vector2 newPosition4 = new Vector2(0,-4);
 
-        if(chance<25) rigidBody.Translate(newPosition1);
-        if (chance >= 25 && chance < 50) rigidBody.Translate(newPosition2);
-        if (chance >= 50 && chance < 75) rigidBody.Translate(newPosition3);
-        if (chance >= 75) rigidBody.Translate(newPosition4);
+        if(chance<25 && rigidBody.position.x > -10) rigidBody.Translate(newPosition1);
+        if (chance >= 25 && chance < 50 && rigidBody.position.y < 10) rigidBody.Translate(newPosition2);
+        if (chance >= 50 && chance < 75 && rigidBody.position.x < 10) rigidBody.Translate(newPosition3);
+        if (chance >= 75 && rigidBody.position.y > -10) rigidBody.Translate(newPosition4);
     }
 
     void despawnItem()

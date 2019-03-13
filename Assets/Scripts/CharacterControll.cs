@@ -111,10 +111,41 @@ public class CharacterControll : MonoBehaviour
         {
             if (currentLive < 100)
             {
-                currentLive += 10;
-                setLive(currentLive);
-                collision.gameObject.SendMessage("despawnItem");
+                currentLive += 20;
+                setLive(currentLive);                
             }
+            collision.gameObject.SendMessage("despawnItem");
+        }
+
+        if (collision.gameObject.tag == "Ammo")
+        {
+
+            MachineGun mGun = GetComponentInChildren<MachineGun>();
+            mGun.setAmmunition(mGun.getAmmo() + 1);
+            collision.gameObject.SendMessage("despawnItem");
+ 
+        }
+        if (collision.gameObject.tag == "MGun")
+        {
+            MachineGun mGun = new MachineGun();
+            updateWeapon(mGun);
+            collision.gameObject.SendMessage("despawnItem");
+
+        }
+        if (collision.gameObject.tag == "Magnum")
+        {
+            MachineGun mGun = new MachineGun();
+            updateWeapon(mGun);
+            collision.gameObject.SendMessage("despawnItem");
+
+        }
+
+        if (collision.gameObject.tag == "Shotgun")
+        {
+            MachineGun mGun = new MachineGun();
+            updateWeapon(mGun);
+            collision.gameObject.SendMessage("despawnItem");
+
         }
     }
     void OnTriggerExit2D(Collider2D collision)
